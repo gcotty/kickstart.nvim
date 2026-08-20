@@ -625,13 +625,29 @@ do
   })
 
   -- Enable the following language servers
-  --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
   --  See `:help lsp-config` for information about keys and how to configure
   ---@type table<string, vim.lsp.Config>
   local servers = {
     pyright = {},
     ruff = {},
-    ts_ls = {},
+    vtsls = {
+      settings = {
+        vtsls = {
+          tsserver = {
+            globalPlugins = {
+              {
+                name = '@vue/typescript-plugin',
+                location = vim.fn.stdpath 'data' .. '/mason/packages/vue-language-server/node_modules/@vue/language-server',
+                languages = { 'vue' },
+                configNamespace = 'typescript',
+              },
+            },
+          },
+        },
+      },
+      filetypes = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact', 'vue' },
+    },
+    vue_ls = {},
     eslint = {},
     html = {},
     cssls = {},
@@ -736,6 +752,7 @@ do
         javascriptreact = true,
         typescript = true,
         typescriptreact = true,
+        vue = true,
         html = true,
         css = true,
         scss = true,
@@ -759,6 +776,7 @@ do
       javascriptreact = { 'prettier' },
       typescript = { 'prettier' },
       typescriptreact = { 'prettier' },
+      vue = { 'prettier' },
       html = { 'prettier' },
       css = { 'prettier' },
       scss = { 'prettier' },
