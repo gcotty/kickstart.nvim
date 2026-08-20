@@ -12,8 +12,12 @@ do
   vim.g.mapleader = ' '
   vim.g.maplocalleader = ' '
 
+  -- disable netrw before loading nvim-tree
+  vim.g.loaded_netrw = 1
+  vim.g.loaded_netrwPlugin = 1
+
   -- Set to true if you have a Nerd Font installed and selected in the terminal
-  vim.g.have_nerd_font = false
+  vim.g.have_nerd_font = true
 
   -- [[ Setting options ]]
   --  See `:help vim.o`
@@ -108,7 +112,6 @@ end
 do
   -- [[ Basic Keymaps ]]
   --  See `:help vim.keymap.set()`
-  vim.keymap.set('n', '<leader>cd', vim.cmd.Ex)
 
   -- Clear highlights on search when pressing <Esc> in normal mode
   --  See `:help hlsearch`
@@ -201,10 +204,6 @@ do
   --  To update plugins, run
   --    :lua vim.pack.update()
   --
-  --
-  --  Throughout the rest of the config there will be examples
-  --  of how to install and configure plugins using `vim.pack`.
-  --
   --  In this section we set up some autocommands to run build
   --  steps for certain plugins after they are installed or updated.
 
@@ -275,20 +274,7 @@ do
   vim.pack.add { gh 'NMAC427/guess-indent.nvim' }
   require('guess-indent').setup {}
 
-  -- Here is a more advanced configuration example that passes options to `gitsigns.nvim`
-  --
-  -- See `:help gitsigns` to understand what each configuration key does.
-  -- Adds git related signs to the gutter, as well as utilities for managing changes
-  vim.pack.add { gh 'lewis6991/gitsigns.nvim' }
-  require('gitsigns').setup {
-    signs = {
-      add = { text = '+' }, ---@diagnostic disable-line: missing-fields
-      change = { text = '~' }, ---@diagnostic disable-line: missing-fields
-      delete = { text = '_' }, ---@diagnostic disable-line: missing-fields
-      topdelete = { text = '‾' }, ---@diagnostic disable-line: missing-fields
-      changedelete = { text = '~' }, ---@diagnostic disable-line: missing-fields
-    },
-  }
+  require 'kickstart.plugins.gitsigns'
 
   -- Useful plugin to show you pending keybinds.
   vim.pack.add { gh 'folke/which-key.nvim' }
@@ -376,6 +362,28 @@ do
 
   -- ... and there is more!
   --  Check out: https://github.com/nvim-mini/mini.nvim
+
+  -- nvim-tree file explorer
+  vim.pack.add {
+    'https://github.com/nvim-tree/nvim-tree.lua',
+    -- optional: file icons; requires a nerd font
+    'https://github.com/nvim-tree/nvim-web-devicons',
+  }
+
+  require('nvim-tree').setup {
+    view = {
+      width = 32,
+    },
+    renderer = {
+      group_empty = true,
+    },
+    filters = {
+      dotfiles = false,
+    },
+  }
+
+  vim.keymap.set('n', '<leader>e', '<cmd>NvimTreeToggle<CR>', { desc = 'Toggle file explorer' })
+  vim.keymap.set('n', '<leader>ef', '<cmd>NvimTreeFindFile!<CR>', { desc = '[E]xplorer: find current [F]ile' })
 end
 
 -- ============================================================
@@ -939,8 +947,6 @@ do
   -- require 'kickstart.plugins.indent_line'
   -- require 'kickstart.plugins.lint'
   -- require 'kickstart.plugins.autopairs'
-  -- require 'kickstart.plugins.neo-tree'
-  require 'kickstart.plugins.gitsigns'
 
   -- NOTE: You can add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --
