@@ -59,6 +59,10 @@ do
   -- Enable break indent
   vim.o.breakindent = true
 
+  -- Insert spaces for indentation; filetype-specific widths are configured
+  -- below so web development and Python can follow their own conventions.
+  vim.o.expandtab = true
+
   -- Enable undo/redo changes even after closing and reopening a file
   vim.o.undofile = true
 
@@ -182,6 +186,32 @@ do
     desc = 'Highlight when yanking (copying) text',
     group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
     callback = function() vim.hl.on_yank() end,
+  })
+
+  local indent_group = vim.api.nvim_create_augroup('filetype-indentation', { clear = true })
+
+  vim.api.nvim_create_autocmd('FileType', {
+    desc = 'Use two-space indentation for web files',
+    group = indent_group,
+    pattern = { 'css', 'html', 'javascript', 'javascriptreact', 'json', 'jsonc', 'scss', 'typescript', 'typescriptreact', 'vue' },
+    callback = function()
+      vim.opt_local.expandtab = true
+      vim.opt_local.tabstop = 2
+      vim.opt_local.shiftwidth = 2
+      vim.opt_local.softtabstop = 2
+    end,
+  })
+
+  vim.api.nvim_create_autocmd('FileType', {
+    desc = 'Use four-space indentation for Python files',
+    group = indent_group,
+    pattern = 'python',
+    callback = function()
+      vim.opt_local.expandtab = true
+      vim.opt_local.tabstop = 4
+      vim.opt_local.shiftwidth = 4
+      vim.opt_local.softtabstop = 4
+    end,
   })
 end
 
