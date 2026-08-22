@@ -406,6 +406,23 @@ do
     },
     renderer = {
       group_empty = true,
+      -- show current branch inside of explorer
+      root_folder_label = function(path)
+        local result = vim
+          .system({
+            'git',
+            '-C',
+            path,
+            'branch',
+            '--show-current',
+          }, { text = true })
+          :wait()
+
+        local branch = vim.trim(result.stdout or '')
+        local folder = vim.fs.basename(path)
+
+        return branch == '' and folder or folder .. '   ' .. branch
+      end,
     },
     filters = {
       dotfiles = false,
